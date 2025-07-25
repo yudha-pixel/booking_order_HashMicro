@@ -14,7 +14,7 @@ class SaleOrder(models.Model):
     work_order_id = fields.Many2one('work.order', string='Work Order')
 
     @api.onchange('service_team_id')
-    def onchange_team_id(self):
+    def onchange_service_team_id(self):
         if self.service_team_id:
             self.service_team_leader_id = self.service_team_id.team_leader_id.id
             self.service_team_members_ids = [(6,0,[user.id for user in self.service_team_id.team_members_ids])]
@@ -22,7 +22,7 @@ class SaleOrder(models.Model):
     def _check_availability(self):
         self.ensure_one()
         domain = [
-            ('team_id', '=', self.team_id.id),
+            ('team_id', '=', self.service_team_id.id),
             ('state', 'not in', ['cancel', 'done']),
             ('planned_start', '<=', self.booking_end),
             ('planned_end', '>=', self.booking_start),
@@ -57,7 +57,7 @@ class SaleOrder(models.Model):
                     'state': 'pending',
                     'planned_start': order.booking_start,
                     'planned_end': order.booking_end,
-                    'team_id': order.team_id.id,
+                    'team_id': order.service_team_id.id,
                     'team_leader_id': order.service_team_leader_id.id,
                     'team_members_ids': [(6, 0, order.service_team_members_ids.ids)],
                     'booking_order_reference_id': order.id,
