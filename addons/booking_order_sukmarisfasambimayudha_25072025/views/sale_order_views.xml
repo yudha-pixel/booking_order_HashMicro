@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="sale_order_booking_form" model="ir.ui.view">
+            <field name="name">sale.order.booking.form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='action_confirm']" position="after">
+                    <button type="object" name="action_check" string="Check" class="oe_highlight"/>
+                </xpath>
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="service_team_id" required="True"/>
+                    <field name="service_team_leader_id" required="True"/>
+                    <field name="service_team_members_ids" widget="many2many_tags" required="True"/>
+                </xpath>
+                <xpath expr="//field[@name='payment_term_id']" position="after">
+                    <field name="booking_start" required="True"/>
+                    <field name="booking_end" required="True"/>
+                </xpath>
+                <xpath expr="//div[@class='oe_button_box']" position="inside">
+                    <button name="action_view_work_order"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-pencil-square-o"
+                            attrs="{'invisible': [('is_work_order', '!=', True)]}">
+                    </button>
+                </xpath>
+            </field>
+        </record>
+        
+        <record id="action_sale_booking_order" model="ir.actions.act_window">
+            <field name="name">Booking Order</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'default_is_booking_order':True}</field>
+            <field name="domain">[('is_booking_order', '=', True)]</field>
+        </record>
+        
+    </data>
+</odoo>
