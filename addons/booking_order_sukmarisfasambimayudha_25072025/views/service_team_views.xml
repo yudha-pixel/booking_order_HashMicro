@@ -29,9 +29,13 @@
                         <group>
                             <group>
                                 <field name="team_leader_id"/>
-                                <field name="team_members_ids"/>
                             </group>
                         </group>
+                        <notebook>
+                            <page string="Team Members">
+                                <field name="team_members_ids"/>
+                            </page>
+                        </notebook>
                     </sheet>
                 </form>
             </field>

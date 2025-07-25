@@ -7,23 +7,25 @@
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//button[@name='action_confirm']" position="after">
-                    <button type="object" name="action_check" string="Check" class="oe_highlight"/>
+                    <button type="object" name="action_check_availability" string="Check" class="oe_highlight"/>
                 </xpath>
                 <xpath expr="//field[@name='partner_id']" position="after">
                     <field name="service_team_id" required="True"/>
                     <field name="service_team_leader_id" required="True"/>
                     <field name="service_team_members_ids" widget="many2many_tags" required="True"/>
                 </xpath>
-                <xpath expr="//field[@name='payment_term_id']" position="after">
+                <xpath expr="//field[@name='date_order']" position="before">
                     <field name="booking_start" required="True"/>
                     <field name="booking_end" required="True"/>
                 </xpath>
                 <xpath expr="//div[@class='oe_button_box']" position="inside">
+                    <field name="work_order_id" invisible="True"/>
                     <button name="action_view_work_order"
+                            string="Work Order"
                             type="object"
                             class="oe_stat_button"
                             icon="fa-pencil-square-o"
-                            attrs="{'invisible': [('is_work_order', '!=', True)]}">
+                            attrs="{'invisible': [('work_order_id', '=', False)]}">
                     </button>
                 </xpath>
             </field>

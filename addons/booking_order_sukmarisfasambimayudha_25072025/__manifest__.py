@@ -1,14 +1,24 @@
 {
     'name': 'Booking Order',
-    'summary': """
-                Booking Order
-                """,
-    'version': '10.0',
+    'version': '1.0',
     'sequence' : 1,
     'author': 'Sukma Risfa Sam Bima Yudha',
     'company': 'HashMicro',
     'website': 'https://www.hashmicro.com/',
-    'category': 'Custom Development',
+    'summary': 'Adds a complete booking order management system.',
+    'description': """
+Manage Service Bookings & Work Orders
+=====================================
+This module allows you to manage service teams, create booking orders, check team availability to prevent double bookings, and automatically generate work orders upon confirmation.
+
+Key Features:
+------------
+- Service Team Management
+- Booking Order creation from Sales Orders
+- Team availability check
+- Automatic Work Order generation
+- Work Order status tracking (Pending, In Progress, Done, Cancelled)
+    """,
     'depends': ['base', 'sale'],
     'data': [
         'data/sequence.xml',

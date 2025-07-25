@@ -1,5 +1,4 @@
 from odoo import models, fields, api, _
-from odoo.exceptions import except_orm, Warning, RedirectWarning
 
 class CancelWorkOrder(models.TransientModel):
     _name = "cancel.work.order"

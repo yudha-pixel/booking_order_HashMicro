@@ -1,36 +1,29 @@
 from odoo import api, fields, models, _
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, Warning
 
 class SaleOrder(models.Model):
     _inherit = "sale.order"
 
-    def _is_wo(self):
-        wo_obj = self.env['work.order']
-
-        for i in self:
-            domain = [('booking_order_reference_id', '=', i.id)]
-        return False
-    
     is_booking_order = fields.Boolean("Is Booking Order")
     service_team_id = fields.Many2one('service.team', 'Team')
     service_team_leader_id = fields.Many2one('res.users', "Team Leader")
     service_team_members_ids = fields.Many2many('res.users', 'res_user_sale_order_rel', 'user_id',
-                                        'sale_order_id', string="Team Members")
+                                                'sale_order_id', string="Team Members")
     booking_start = fields.Datetime(string='Booking Start')
     booking_end = fields.Datetime(string='Booking End')
-    is_work_order = fields.Boolean("Is Work Order", compute=_is_wo)
+    work_order_id = fields.Many2one('work.order', string='Work Order')
 
-    @api.onchange('team_id')
+    @api.onchange('service_team_id')
     def onchange_team_id(self):
-        if self.team_id:
-            self.team_leader_id = self.service_team_id.team_leader_id.id
-            self.team_members_ids = [(6,0,[user.id for user in self.service_team_id.team_members_ids])]
+        if self.service_team_id:
+            self.service_team_leader_id = self.service_team_id.team_leader_id.id
+            self.service_team_members_ids = [(6,0,[user.id for user in self.service_team_id.team_members_ids])]
 
     def _check_availability(self):
         self.ensure_one()
         domain = [
             ('team_id', '=', self.team_id.id),
-            ('state', '!=', 'cancelled'),
+            ('state', 'not in', ['cancel', 'done']),
             ('planned_start', '<=', self.booking_end),
             ('planned_end', '>=', self.booking_start),
         ]
@@ -45,15 +38,7 @@ class SaleOrder(models.Model):
                        overlapping_wo.booking_order_reference_id.name)
             raise ValidationError(message)
         else:
-            return {
-                'type': 'ir.actions.client',
-                'tag': 'display_notification',
-                'params': {
-                    'title': _('Availability Check'),
-                    'message': 'Team is available for booking',
-                    'sticky': False,
-                }
-            }
+            raise Warning(_('Team is available for booking'))
 
     @api.multi
     def action_confirm(self):
@@ -68,40 +53,30 @@ class SaleOrder(models.Model):
 
                 res = super(SaleOrder, self).action_confirm()
 
-                self.env['work.order'].create({
+                work_order = self.env['work.order'].create({
                     'state': 'pending',
-                    'date_start': order.booking_start,
-                    'date_end': order.booking_end,
+                    'planned_start': order.booking_start,
+                    'planned_end': order.booking_end,
                     'team_id': order.team_id.id,
                     'team_leader_id': order.service_team_leader_id.id,
                     'team_members_ids': [(6, 0, order.service_team_members_ids.ids)],
                     'booking_order_reference_id': order.id,
                 })
+                order.write({'work_order_id': work_order.id})
                 return res
         return super(SaleOrder, self).action_confirm()
 
     @api.multi
     def action_view_work_order(self):
-        wo_ids = self.env['work.order'].search([('sale_order_id', '=', self.id)])
-        imd = self.env['ir.model.data']
-        action = imd.xmlid_to_object('booking_order_muhardiansyah_300822.action_view_work_order')
-        list_view_id = imd.xmlid_to_res_id('booking_order_muhardiansyah_300822.work_order_tree')
-        form_view_id = imd.xmlid_to_res_id('booking_order_muhardiansyah_300822.work_order_form')
-
-        result = {
-            'name': action.name,
-            'help': action.help,
-            'type': action.type,
-            'views': [(form_view_id, 'form')],
-            'target': action.target,
-            'context': action.context,
-            'res_model': action.res_model,
-            'res_id' : wo_ids[0].id,
-            'view_type' : 'form',
-            'view_mode' : 'form',
-            'view_id' : form_view_id,
+        """ Open the work order form view """
+        self.ensure_one()
+        return {
+            'name': _('Work Order'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'work.order',
+            'view_mode': 'form',
+            'res_id': self.work_order_id.id,
+            'target': 'current',
         }
-        
-        return result
-        
+
     

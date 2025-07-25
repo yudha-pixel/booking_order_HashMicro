@@ -15,6 +15,7 @@
             <field name="header_spacing">76</field>
             <field name="dpi">90</field>
         </record>
+
         <report
             id="report_work_order"
             string="Work Order"
@@ -23,6 +24,7 @@
             file="booking_order_sukmarisfasambimayudha_25072025.report_work_order_template"
             name="booking_order_sukmarisfasambimayudha_25072025.report_work_order_template"
         />
+
         <record id="report_work_order" model="ir.actions.report.xml">
             <field name="paperformat_id" ref="report_work_order_format"/>
         </record>
