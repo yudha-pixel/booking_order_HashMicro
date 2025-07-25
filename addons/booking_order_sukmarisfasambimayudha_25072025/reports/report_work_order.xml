@@ -19,7 +19,7 @@
                             </tr>
                             <tr style="border-bottom:1px solid black;">
                                 <td style="border-right:1px solid black; padding:10px;">Booking Order Ref</td>
-                                <td style="border-right:1px solid black; padding:10px;"><span t-esc="o.booking_order_reference_id.id"/></td>
+                                <td style="border-right:1px solid black; padding:10px;"><span t-esc="o.booking_order_reference_id.name"/></td>
                                 <td style="border-right:1px solid black; padding:10px;">Date</td>
                                 <td style="padding:10px;">
                                     <span t-esc="o.date_start" t-options="{'widget':'date'}"/> -
