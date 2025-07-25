@@ -79,7 +79,6 @@
             </field>
         </record>
         
-        
         <record id="work_order_form" model="ir.ui.view">
             <field name="name">work.order.form</field>
             <field name="model">work.order</field>

@@ -68,7 +68,6 @@ class SaleOrder(models.Model):
 
     @api.multi
     def action_view_work_order(self):
-        """ Open the work order form view """
         self.ensure_one()
         return {
             'name': _('Work Order'),

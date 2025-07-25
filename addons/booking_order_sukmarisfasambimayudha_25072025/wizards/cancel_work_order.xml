@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data>
+
         <record id="view_wizard_cancel_work_order_form" model="ir.ui.view">
             <field name="name">wizard.cancel.work.order.form</field>
             <field name="model">cancel.work.order</field>
@@ -18,8 +19,7 @@
                 </form>
             </field>
         </record>
-        
-        
+
         <record id="action_wizard_cancel_work_order" model="ir.actions.act_window">
             <field name="name">Cancel Work Order</field>
             <field name="type">ir.actions.act_window</field>
